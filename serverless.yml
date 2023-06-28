@@ -1,0 +1,57 @@
+service: aws-serverless-http-api
+
+provider:
+  name: aws
+  runtime: python3.9
+
+functions:
+  streak-data-get:
+    handler: handler.get_streak_data
+    events:
+      - http:
+          path: /streak-data
+          method: GET
+  streak-data-delete:
+    handler: handler.delete_streak_data
+    events:
+      - http:
+          path: /streak-data
+          method: DELETE
+  streak-data-update:
+    handler: handler.update_streak_data
+    events:
+      - http:
+          path: /streak-data
+          method: PUT
+
+stepFunctions:
+  validate: true
+  stateMachines:
+    streakManager:
+      name: streakManager
+      definition:
+        Comment: "A Sample Streak Management State Machine"
+        StartAt: Get_Streak_Data
+        States:
+          Get_Streak_Data:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [streak-data-get, Arn]
+            Next: Update_Streak_Data
+            Comment: Run the Update_Streak_Data Lambda function
+          Update_Streak_Data:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [streak-data-update, Arn]
+            Next: Delete_Streak_Data
+            Comment: Run the Delete_Streak_Data Lambda function
+          Delete_Streak_Data:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [streak-data-delete, Arn]
+            End: true
+            Comment: Completion Success
+
+
+plugins:
+  - serverless-step-functions

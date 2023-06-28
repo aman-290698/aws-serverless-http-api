@@ -1,0 +1,24 @@
+{
+  "Comment": "A Sample Streak Management State Machine",
+  "StartAt": "Get_Streak_Data",
+  "States": {
+    "Get_Streak_Data": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:478004863762:function:aws-serverless-http-api-dev-streak-data-get",
+      "Next": "Update_Streak_Data",
+      "Comment": "Run the Update_Streak_Data Lambda function"
+    },
+    "Update_Streak_Data": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:478004863762:function:aws-serverless-http-api-dev-streak-data-get",
+      "Next": "Delete_Streak_Data",
+      "Comment": "Run the Delete_Streak_Data Lambda function"
+    },
+    "Delete_Streak_Data": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:478004863762:function:aws-serverless-http-api-dev-streak-data-get",
+      "Comment": "Completion Success",
+      "End": true
+    }
+  }
+}
